@@ -92,11 +92,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         for (FirebaseVisionText.TextBlock block : text.getTextBlocks()) {
-            String txt = block.getText();
+            txtCollected = block.getText();
             txtView.setTextSize(20);
-            txtView.setText(txt);
+            txtView.setText(txtCollected);
         }
-
+        tts();
     }
 
     public void tts(){
