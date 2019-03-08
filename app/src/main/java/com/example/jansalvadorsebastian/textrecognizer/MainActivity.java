@@ -33,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private TextView txtView;
     private Bitmap imageBitmap;
+    private TextToSpeech textToSpeech;
+    int result;
+    String txtCollected;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -82,7 +85,9 @@ public class MainActivity extends AppCompatActivity {
     private void processTxt(FirebaseVisionText text) {
         List<FirebaseVisionText.TextBlock> blocks = text.getTextBlocks();
         if (blocks.size() == 0) {
-            Toast.makeText(this, "no text found", Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, "no text found", Toast.LENGTH_LONG).show();
+            txtCollected = "Sorry, No text found.";
+            tts();
             return;
         }
 
@@ -92,6 +97,29 @@ public class MainActivity extends AppCompatActivity {
             txtView.setText(txt);
         }
 
+    }
+
+    public void tts(){
+        textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS){
+                    result = textToSpeech.setLanguage(Locale.UK);
+
+                    if (result==TextToSpeech.LANG_MISSING_DATA || result==TextToSpeech.LANG_NOT_SUPPORTED){
+                        Log.e("TTS Msg: ", "Language not supported");
+                    }else{
+                        if(txtCollected!=null){
+                            textToSpeech.speak(txtCollected, TextToSpeech.QUEUE_FLUSH, null);
+                        }
+                    }
+
+                }else{
+                    Log.e("Error Msg: ", "Initilization Failed!");
+                }
+
+            }
+        });
     }
 
 
